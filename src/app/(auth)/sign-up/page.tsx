@@ -17,6 +17,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@src/components/ui/form";
+import { trpc } from "@/src/trpc/client";
 
 export default function Page() {
 	const form = useForm<SignUpForm>({
@@ -28,17 +29,10 @@ export default function Page() {
 		},
 	});
 
-	const isSubmitting = form.formState.isSubmitting;
+	const { mutate, isLoading } = trpc.auth.createPayloadUser.useMutation();
 
-	const onSubmit = async (values: SignUpForm) => {
-		// do something
-		const delay = (ms: number) =>
-			new Promise((resolve) => setTimeout(resolve, ms));
-
-		// Simulate an asynchronous operation with a Promise
-		const result = await delay(1000).then(() => {
-			console.log(values);
-		});
+	const onSubmit = (values: SignUpForm) => {
+		mutate(values);
 	};
 
 	return (
@@ -113,7 +107,7 @@ export default function Page() {
 								)}
 							/>
 							<Button type="submit">
-								{isSubmitting ? (
+								{isLoading ? (
 									<>
 										<Icons.spinner />
 										Submitting...
