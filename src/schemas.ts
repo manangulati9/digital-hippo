@@ -1,19 +1,20 @@
 import { z } from "zod";
 
-const signUpFormSchema = z
+const authCredsValidator = z
 	.object({
 		email: z.string().email("Invalid email address"),
 		password: z.string().min(8, "Password must be at least 8 characters"),
 		confirmPassword: z
 			.string()
-			.min(8, "Password must be at least 8 characters"),
+			.min(8, "Password must be at least 8 characters")
+			.optional(),
 	})
 	.refine((data) => data.password === data.confirmPassword, {
 		message: "Passwords do not match",
 		path: ["confirmPassword"],
 	});
 
-type SignUpForm = z.infer<typeof signUpFormSchema>;
+type TAuthCredsValidator = z.infer<typeof authCredsValidator>;
 
-export { signUpFormSchema };
-export type { SignUpForm };
+export { authCredsValidator };
+export type { TAuthCredsValidator };
